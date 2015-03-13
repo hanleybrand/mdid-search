@@ -8,6 +8,21 @@ TO give some more flexibility of search providers. We had hoped it might also ma
 
 # NOTE - still working it out, this may not work as committed
 
+## current status
+
+```
+./manage.py haystack_info
+
+Number of handled 3 index(es).
+  - Model: FieldValue by Index: <rooibos.apps.mdid-search.search_indexes.FieldValueIndex object at 0x108d6c530>
+  - Model: Record by Index: <rooibos.apps.mdid-search.search_indexes.RecordIndex object at 0x108d6c600>
+  - Model: Field by Index: <rooibos.apps.mdid-search.search_indexes.FieldIndex object at 0x108d6c4c8>
+```
+
+`./manage.py build_solr_schema`
+
+see [generated_schema.xml](generated_schema.xml)
+
 ## Checking it out
 
 `pip install --upgrade django-haystack`
