@@ -4,14 +4,17 @@ from rooibos.data.models import Record, Field, FieldValue
 
 
 class RecordIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(model_attr='title', document=True, use_template=True)
     pub_date = indexes.DateTimeField(model_attr='pub_date')
-    title = indexes.CharField(model_attr='title', document=True, use_template=True)
     created = indexes.DateTimeField(model_attr='created', faceted=True)
     modified = indexes.DateTimeField(model_attr='modified', faceted=True)
     source = indexes.CharField(model_attr='source')
 
     def get_model(self):
         return Record
+
+    def prepare_title(self, obj):
+        return obj.record.title
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
@@ -28,7 +31,7 @@ class RecordIndex(indexes.SearchIndex, indexes.Indexable):
 
 
 class FieldIndex(indexes.SearchIndex, indexes.Indexable):
-    label = indexes.CharField(model_attr='label')
+    text = indexes.CharField(model_attr='label', document=True)
 
     def get_model(self):
         return Field
@@ -39,10 +42,10 @@ class FieldIndex(indexes.SearchIndex, indexes.Indexable):
 
 
 class FieldValueIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(model_attr='value', document=True)
     record = indexes.CharField(model_attr='record')
-    field = indexes.CharField(model_attr='field')
-    label = indexes.CharField(model_attr='label')
-    value = indexes.CharField(model_attr='value')
+    field_name = indexes.CharField(model_attr='field')
+    field_label = indexes.CharField(model_attr='label')
 
     def get_model(self):
         return FieldValue
@@ -50,10 +53,10 @@ class FieldValueIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_record(self, obj):
         return obj.record.name
 
-    def prepare_label(self, obj):
+    def prepare_field_label(self, obj):
         return obj.field.label
 
-    def prepare_field(self, obj):
+    def prepare_field_name(self, obj):
         return obj.field.name
 
     def index_queryset(self, using=None):
